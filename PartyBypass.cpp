@@ -64,6 +64,3 @@ static InitRoutine init([]() {
 	});
 });
 /* <<Aye aye captain!>> */
-/* todo?
- * 68 74 74 70 ?  ?  ?  ?  79 6F 75 74 75 ?  62 65 ?  4B 6A 59 4D 49 4A 51 7A 4B 35 6F
- */
