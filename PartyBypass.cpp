@@ -32,35 +32,15 @@ static CatCommand identify("print_steamid", "Prints your SteamID",
 });
 
 static InitRoutine init([]() {
-	static BytePatch p[] = {
-		{gSignatures.GetClientSignature,
-			"74 ? E8 ? ? ? ? 89 F1",
-			0x00, {0x90, 0x90}},
-		{gSignatures.GetClientSignature,
-			"0F 84 ? ? ? ? 8B 45 ? 8B 70 ? 8B 78 ? 8D",
-			0x00, {0xBB, 0x01, 0x00, 0x00, 0x00, 0x90}},
-		{gSignatures.GetClientSignature,
-			"0F 84 ? ? ? ? 8B 73 ? 8D 45",
-			0x00, {0x90, 0xE9}},
-		{gSignatures.GetClientSignature,
-			"0F 84 ? ? ? ? 8B 7B ? 8D 45",
-			0x00, {0xC6, 0x85, 0x8F, 0xFE, 0xFF, 0xFF, 0x01}},
-		{gSignatures.GetClientSignature,
-			"8B 85 ? ? ? ? 89 44 24 ? 8B 85 ? ? ? ? 89 04 24 E8 ? ? ? ? E9 ? ? ? ? 0F",
-			0x00, {0x8B, 0x85, 0xF4, 0xFD, 0xFF, 0xFF}},
-		{gSignatures.GetClientSignature,
-			"0F 84 ? ? ? ? 80 BD ? ? ? ? ? 0F 84 ? ? ? ? 8D 85 ? ? ? ? 89 44",
-			0x00, {0x90, 0x90, 0x90, 0x90, 0x90, 0x90}},
-		{gSignatures.GetClientSignature,
-			"0F 84 ? ? ? ? 80 BD ? ? ? ? ? 0F 84 ? ? ? ? 8D 85 ? ? ? ? 89 44",
-			0x0D, {0x0F, 0x8E}}
-	};
-	if (*pb) for (int i = 0; i < 7; ++i)
-		p[i].Patch();
+	static BytePatch p = {gSignatures.GetClientSignature,
+			"55 89 E5 53 83 EC 14 8B 45 08 8B 40 30",
+			0x00, {0x31, 0xC0, 0xB0, 0x01, 0xC3}};
+	if (*pb) p.Patch();
 	pb.installChangeCallback([](settings::VariableBase<bool> &var, bool new_val) {
-		for (int i = 0; i < 7; ++i)
-			if (new_val) 	p[i].Patch();
-			else 			p[i].Shutdown();
+		if (new_val)
+			p.Patch();
+		else
+			p.Shutdown();
 	});
 });
 /* <<Aye aye captain!>> */
