@@ -34,7 +34,7 @@ static CatCommand identify("print_steamid", "Prints your SteamID",
 static InitRoutine init([]() {
 	static BytePatch p = {gSignatures.GetClientSignature,
 			"55 89 E5 53 83 EC 14 8B 45 08 8B 40 30",
-			0x00, {0x31, 0xC0, 0xB0, 0x01, 0xC3}};
+			0x00, {0x31, 0xC0, 0x40, 0xC3}};
 	if (*pb) p.Patch();
 	pb.installChangeCallback([](settings::VariableBase<bool> &var, bool new_val) {
 		if (new_val)
