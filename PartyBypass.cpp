@@ -27,8 +27,7 @@ static settings::Bool pb("party-bypass", "true");
 
 static CatCommand identify("print_steamid", "Prints your SteamID",
 []() {
-	auto s = std::to_string(g_ISteamUser->GetSteamID().GetAccountID());
-	g_ICvar->ConsolePrintf("%s\n", s.c_str());
+	g_ICvar->ConsolePrintf("%u\n", g_ISteamUser->GetSteamID().GetAccountID());
 });
 
 static InitRoutine init([]() {
