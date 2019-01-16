@@ -31,15 +31,20 @@ static CatCommand identify("print_steamid", "Prints your SteamID",
 });
 
 static InitRoutine init([]() {
-	static BytePatch p = {gSignatures.GetClientSignature,
+	static BytePatch p[2] = {
+		{gSignatures.GetClientSignature,
 			"55 89 E5 53 83 EC 14 8B 45 08 8B 40 30",
-			0x00, {0x31, 0xC0, 0x40, 0xC3}};
-	if (*pb) p.Patch();
+			0x00, {0x31, 0xC0, 0x40, 0xC3}},
+		{gSignatures.GetClientSignature,
+			"55 89 E5 57 56 53 83 EC ? 8B 45 0C 8B 5D 08 8B 55 10 89 45 ? 8B 43 ?",
+			0x00, {0x31, 0xC0, 0x40, 0xC3}}
+	};
+	if (*pb) for (int i = 0; i < 2; ++i)
+		p[i].Patch();
 	pb.installChangeCallback([](settings::VariableBase<bool> &var, bool new_val) {
-		if (new_val)
-			p.Patch();
-		else
-			p.Shutdown();
+		for (int i = 0; i < 2; ++i)
+			if (new_val)	p[i].Patch();
+			else			p[i].Shutdown();
 	});
 });
 /* <<Aye aye captain!>> */
